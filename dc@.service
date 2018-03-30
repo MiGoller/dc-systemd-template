@@ -1,0 +1,32 @@
+#
+#   This is a systemd template file for systemd services running docker-composed containers.
+#   Place this template file to /etc/systemd/system/dc@.service !
+#
+
+[Unit]
+Description=%i service powered by docker compose
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+TimeoutStartSec=300
+
+#   Create a directory for each docker-composed service at /opt/dockerfiles.
+#   Name the directory as the service.
+WorkingDirectory=/opt/dockerfiles/%i
+
+#   Remove old containers, images and volumes and update it
+ExecStartPre=/usr/bin/docker-compose down
+ExecStartPre=/usr/bin/docker-compose rm -f
+#   Comment the following to not automatically update your images!
+#ExecStartPre=/usr/bin/docker-compose pull
+
+#   Run Compose up on service start.
+ExecStart=/usr/bin/docker-compose up
+
+#   Run Compose down, remove containers and volumes on service stop.
+ExecStop=/usr/bin/docker-compose down
+
+[Install]
+WantedBy=multi-user.target

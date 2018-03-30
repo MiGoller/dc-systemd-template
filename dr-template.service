@@ -1,0 +1,20 @@
+#
+#   This is a systemd template file for systemd services running a single docker container.
+#
+
+[Unit]
+Description=<Your service description goes here>
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/docker run --name <Your container name> \
+       <name of the image>
+
+ExecStop=/usr/bin/docker stop -t 2 <Your container name>
+
+ExecStopPost=/usr/bin/docker rm -f <Your container name>
+
+[Install]
+WantedBy=multi-user.target
